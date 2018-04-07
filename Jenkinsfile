@@ -104,7 +104,7 @@ pipeline {
         }
       }
     }
-    
+
     stage('Deploy to dev') {
       when {
         branch 'master'
@@ -116,7 +116,19 @@ pipeline {
         }
       }
     }
-    
+
+    stage('Run Dev Integration Tests'){
+      when {
+        branch 'master'
+      }
+      agent any
+      steps{
+        script {
+          echo 'Run Integration Tests'
+        }
+      }
+    }
+
     stage('Smoke test dev') {
       when {
         branch 'master'
@@ -142,7 +154,7 @@ pipeline {
         deployToEnvironment("ec2-user", "qa.petclinic.liatr.io", "petclinic-deploy-key", env.IMAGE, TAG, "spring-petclinic", "qa.petclinic.liatr.io")
       }
     }
-    
+
     stage('Smoke test qa') {
       when {
         branch 'master'
@@ -159,7 +171,7 @@ pipeline {
         input 'Deploy to Prod?'
       }
     }
-    
+
     stage('Blue/Green Prod Deploy') {
       when {
         branch 'master'
