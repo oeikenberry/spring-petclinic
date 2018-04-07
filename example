@@ -36,10 +36,12 @@ pipeline {
       }
     }
     stage('Run Integration Tests Dev') {
-      agent any
-      steps {
-        sh 'sleep 10'
-      }
+	agent any
+	steps {
+	  //Oliver Addition
+	  sh 'sleep 10'
+	}
+    }
     stage('Smoke-Test Dev') {
       agent any
       steps {
