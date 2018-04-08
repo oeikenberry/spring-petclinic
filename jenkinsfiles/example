@@ -77,7 +77,7 @@ pipeline {
 	echo 'Production App Tier Deployment Successful'
       }
     }
-    stage('Run Schema Migrations on Dev DB') {
+    stage('Run Schema Migrations on Prod DB') {
       agent any
       steps {
         //Production Schema Updates
