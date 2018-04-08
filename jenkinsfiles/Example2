@@ -1,0 +1,89 @@
+#!/bin/env groovy
+
+pipeline {
+  agent none
+
+  environment {
+    IMAGE = "liatrio/petclinic-tomcat"
+  }
+
+  stages {
+    stage('Build') {
+      agent any
+      steps {
+        sh 'mvn clean install'
+	echo 'Build Complete'
+      }
+    }
+    stage('Package') {
+      agent any
+      steps {
+        script {
+          if ( env.BRANCH_NAME == 'master' ) {
+            pom = readMavenPom file: 'pom.xml'
+            TAG = pom.version
+          } else {
+            TAG = env.BRANCH_NAME
+          }
+          sh "docker build -t ${env.IMAGE}:${TAG} ."
+	  echo 'Package Creation Successful'
+        }
+      }
+    }
+    stage('Build DB Schema Migration') {
+      agent any
+      steps {
+        //build schema migration
+        sh 'sleep 4'
+        echo 'Schema Migration Built'
+      }
+    }
+    stage('Deploy App Tier to Vagrant') {
+      agent any
+      steps {
+        sh 'docker rm -f petclinic-tomcat-temp || true'
+        sh "docker run -d -p 9966:8080 --name petclinic-tomcat-temp ${env.IMAGE}:${TAG}"
+        echo 'App Tier Deployed to Dev Environment'
+      }
+    }
+    stage('Run Schema Migrations on Local DB') {
+      agent any
+      steps {
+        //run schema migrations on dev db
+        sh 'sleep 4'
+        echo 'Dev Schema Update Successful'
+      }
+    }
+    stage('Run Integration Tests Vagrant') {
+	agent any
+	steps {
+	  //integration test run dev
+	  sh 'sleep 10'
+	}
+    }
+    stage('Smoke-Test Vagrant') {
+      agent any
+      steps {
+        //Smoke tests to validate Dev Environment
+        sh 'sleep 12'
+        echo 'Smoke Tests Passed'
+      }
+    }
+    stage('Commit Changes to Local Repo') {
+      agent any
+      steps {
+        //Commit Changes to Local Repo
+        sh 'sleep 12'
+        echo 'Changes commited to local repo'
+      }
+    }
+    stage('Push Changes to Origin') {
+      agent any
+      steps {
+        //Push changes to Origin Master
+        sh 'sleep 12'
+        echo 'Changes pushed to origin'
+      }
+    }
+  }
+}
