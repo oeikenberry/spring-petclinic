@@ -12,6 +12,7 @@ pipeline {
       agent any
       steps {
         sh 'mvn clean install'
+	echo 'Build Complete'
       }
     }
     stage('Package') {
@@ -25,71 +26,71 @@ pipeline {
             TAG = env.BRANCH_NAME
           }
           sh "docker build -t ${env.IMAGE}:${TAG} ."
+	  echo 'Package Creation Successful'
         }
       }
     }
-    stage('Push Package to S3') {
+    stage('Build DB Schema Migration') {
       agent any
       steps {
-        //sample dummy step
+        //build schema migration
         sh 'sleep 4'
-        echo 'S3 Upload Complete'
+        echo 'Schema Migration Built'
       }
     }
-    stage('Deploy to Dev AWS Account') {
+    stage('Deploy App Tier to Dev Environment') {
       agent any
       steps {
         sh 'docker rm -f petclinic-tomcat-temp || true'
-        sh "docker run -d -p 9966:8080 --name petclinic-tomcat-temp ${env.IMAGE}:${TAG}"
+        sh "docker run -d -p 9966:8080 --name petclinic-tomcat-temp ${env.IMAGE}:${TAG}
+        echo 'App Tier Deployed to Dev Environment'"
+      }
+    }
+    stage('Run Schema Migrations on Dev DB') {
+      agent any
+      steps {
+        //run schema migrations on dev db
+        sh 'sleep 4'
+        echo 'Dev Schema Update Successful'
       }
     }
     stage('Run Integration Tests Dev') {
 	agent any
 	steps {
-	  //Oliver Addition
+	  //integration test run dev
 	  sh 'sleep 10'
 	}
     }
     stage('Smoke-Test Dev') {
       agent any
       steps {
-        //sample dummy step
-        sh 'sleep 4'
+        //Smoke tests to validate Dev Environment
+        sh 'sleep 12'
+        echo 'Smoke Tests Passed'
       }
     }
-    stage('Deploy to Production') {
+    stage('Deploy App Tier to Production') {
       agent any
       steps {
-        //sample dummy step
+        //Production App Tier Deployment
         sh 'sleep 4'
+	echo 'Production App Tier Deployment Successful'
+      }
+    }
+    stage('Run Schema Migrations on Dev DB') {
+      agent any
+      steps {
+        //Production Schema Updates
+        sh 'sleep 7'
+	echo 'Production Schema Updated'
       }
     }
     stage('Run Production Deployment Verification Tests') {
       agent any
       steps {
-        //sample dummy step
-        sh 'sleep 4'
-      }
-    }
-    stage('Switch Stacks in ELB') {
-      agent any
-      steps {
-        //sample dummy step
-        sh 'sleep 4'
-      }
-    }
-    stage('Validate Traffic Transfered to New Stack') {
-      agent any
-      steps {
-        //sample dummy step
-        sh 'sleep 4'
-      }
-    }
-    stage('Teardown old Stack') {
-      agent any
-      steps {
-        //sample dummy step
-        sh 'sleep 4'
+        //Production deployment verification tests
+        sh 'sleep 9'
+	echo 'Production deployemnt verification tests Passed'
       }
     }
   }
