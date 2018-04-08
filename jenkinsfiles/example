@@ -28,7 +28,14 @@ pipeline {
         }
       }
     }
-    stage('Deploy to Dev') {
+    stage('Push Package to S3') {
+      agent any
+      steps {
+        //sample dummy step
+        sh 'sleep 4'
+      }
+    }
+    stage('Deploy to Dev AWS Account') {
       agent any
       steps {
         sh 'docker rm -f petclinic-tomcat-temp || true'
@@ -49,7 +56,35 @@ pipeline {
         sh 'sleep 4'
       }
     }
-    stage('Another stage') {
+    stage('Deploy to Production') {
+      agent any
+      steps {
+        //sample dummy step
+        sh 'sleep 4'
+      }
+    }
+    stage('Run Production Deployment Verification Tests') {
+      agent any
+      steps {
+        //sample dummy step
+        sh 'sleep 4'
+      }
+    }
+    stage('Switch Stacks in ELB') {
+      agent any
+      steps {
+        //sample dummy step
+        sh 'sleep 4'
+      }
+    }
+    stage('Validate Traffic Transfered to New Stack') {
+      agent any
+      steps {
+        //sample dummy step
+        sh 'sleep 4'
+      }
+    }
+    stage('Teardown old Stack') {
       agent any
       steps {
         //sample dummy step
