@@ -33,6 +33,7 @@ pipeline {
       steps {
         //sample dummy step
         sh 'sleep 4'
+        echo 'S3 Upload Complete'
       }
     }
     stage('Deploy to Dev AWS Account') {
