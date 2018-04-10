@@ -93,5 +93,13 @@ pipeline {
 	echo 'Production deployment verification tests Passed'
       }
     }
+    stage('Notify Slack Room of Succesful Deploymnent') {
+      agent any
+      steps {
+        //deployment notificaiton
+        sh 'sleep 9'
+        echo 'the build Passed!'
+      }
+    }
   }
 }
