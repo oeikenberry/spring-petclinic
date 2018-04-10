@@ -54,7 +54,7 @@ pipeline {
         echo 'Dev Schema Update Successful'
       }
     }
-    stage('Run Integration Tests Vagrant') {
+    stage('Run Integration Tests in Vagrant Enviroment') {
 	agent any
 	steps {
 	  //integration test run dev
