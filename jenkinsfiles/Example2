@@ -81,7 +81,7 @@ pipeline {
       agent any
       steps {
         //Push changes to Origin Master
-        sh 'sleep 5'
+        sh 'sleep 2'
         echo 'Changes pushed to origin'
       }
     }
